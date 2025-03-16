@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,8 +12,9 @@ public class PlayerMovement : MonoBehaviour
     public State state = State.idle;
     public Collider2D coll;
     [SerializeField] public LayerMask ground;
-    [SerializeField] public float movementSpeed;
-    [SerializeField] public float jumpForce = 10f;
+    [SerializeField] public MovementStrategy movementStrategy;
+    private ObjectPool objectPool;
+
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         coll = GetComponent<Collider2D>();
+        movementStrategy = new DefaultStrategy();
+        objectPool = FindObjectOfType<ObjectPool>();
     }
 
     // Update is called once per frame
@@ -27,18 +32,18 @@ public class PlayerMovement : MonoBehaviour
         float hDirection = Input.GetAxis("Horizontal");
         if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, movementStrategy.GetJumpForce());
             state = State.jump;
         }
         else if (hDirection < 0)
         {
-            rb.velocity = new Vector2(-movementSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(-movementStrategy.GetSpeed(), rb.velocity.y);
             transform.localScale = new Vector2(-1, 1);
 
         }
         else if (hDirection > 0)
         {
-            rb.velocity = new Vector2(movementSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(movementStrategy.GetSpeed(), rb.velocity.y);
             transform.localScale = new Vector2(1, 1);
 
         }
@@ -49,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
         velocityState();
         anim.SetInteger("State", (int)state);
     }
+
     public void velocityState()
     {
         if (state == State.jump)
@@ -73,5 +79,27 @@ public class PlayerMovement : MonoBehaviour
         {
             state = State.idle;
         }
+    }
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Cherry")
+        {
+            movementStrategy = new CherryStrategy();
+        }
+        else if (collision.tag == "Banana")
+        {
+            movementStrategy = new BananaStrategy();
+        }
+        else if (collision.tag == "Apple")
+        {
+            movementStrategy = new AppleStrategy();
+        }
+        objectPool.ReturnToPool(collision.gameObject);
+        StartCoroutine(RespawnPowerUp(collision.transform.position));
+    }
+    public IEnumerator RespawnPowerUp(Vector2 position)
+    {
+        yield return new WaitForSeconds(5f);
+        objectPool.SpawnPowerUp(position);
     }
 }
