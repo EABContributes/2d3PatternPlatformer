@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Vince-Prefab/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Lvl 1 - Terrel.unity
+    guid: 64724599af9320e49928161d9b981d5b
+  - enabled: 1
+    path: Assets/Scenes/Lvl 3 - Vince.unity
+    guid: daea31a7121996d47afa39073b8961d9
   m_configObjects: {}
