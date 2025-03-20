@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
- * Vince Herrera
- */
 public static class MovementStrategyFactory
 {
     public static MovementStrategy GetStrategy(string aPowerUpTag)

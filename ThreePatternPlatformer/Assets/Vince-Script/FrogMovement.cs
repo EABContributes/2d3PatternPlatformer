@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
- * Vince Herrera
- */
 public class FrogMovement : MonoBehaviour
 {
     [SerializeField] public float leftBound;

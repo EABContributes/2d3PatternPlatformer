@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/*
- * Vince Herrera
- */
 public class Player_Death : MonoBehaviour
 {
     [SerializeField] public float delay = 2f;

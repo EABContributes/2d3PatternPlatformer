@@ -8,7 +8,6 @@ TagManager:
   - Banana
   - Apple
   - Enemy
-  - 3Platform
   layers:
   - Default
   - TransparentFX
