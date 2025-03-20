@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
+/*
+ * Vince Herrera
+ */
+
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D rb;
@@ -14,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public LayerMask ground;
     [SerializeField] public MovementStrategy movementStrategy;
     private ObjectPool objectPool;
-
+    private Manager manager;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
         coll = GetComponent<Collider2D>();
         movementStrategy = new DefaultStrategy();
         objectPool = FindObjectOfType<ObjectPool>();
+        manager = FindObjectOfType<Manager>();
     }
 
     // Update is called once per frame
@@ -39,13 +44,11 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(-movementStrategy.GetSpeed(), rb.velocity.y);
             transform.localScale = new Vector2(-1, 1);
-
         }
         else if (hDirection > 0)
         {
             rb.velocity = new Vector2(movementStrategy.GetSpeed(), rb.velocity.y);
             transform.localScale = new Vector2(1, 1);
-
         }
         else if (coll.IsTouchingLayers(ground))
         {
@@ -80,23 +83,33 @@ public class PlayerMovement : MonoBehaviour
             state = State.idle;
         }
     }
+
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Cherry")
         {
             movementStrategy = new CherryStrategy();
+            objectPool.ReturnToPool(collision.gameObject);
+            StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
         else if (collision.tag == "Banana")
         {
             movementStrategy = new BananaStrategy();
+            objectPool.ReturnToPool(collision.gameObject);
+            StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
         else if (collision.tag == "Apple")
         {
             movementStrategy = new AppleStrategy();
+            objectPool.ReturnToPool(collision.gameObject);
+            StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
-        objectPool.ReturnToPool(collision.gameObject);
-        StartCoroutine(RespawnPowerUp(collision.transform.position));
+        else if (collision.tag == "3Platform")
+        {
+            StartCoroutine(manager.HandlePlatform(collision.gameObject));
+        }
     }
+
     public IEnumerator RespawnPowerUp(Vector2 position)
     {
         yield return new WaitForSeconds(5f);
