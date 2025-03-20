@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Vince Herrera
+ */
+
 public class BananaStrategy : MovementStrategy
 {
     public float GetSpeed()
