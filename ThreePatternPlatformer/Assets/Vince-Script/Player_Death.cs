@@ -11,7 +11,7 @@ public class Player_Death : MonoBehaviour
     [SerializeField] public float delay = 2f;
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Kill")
         {
             gameObject.SetActive(false);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
