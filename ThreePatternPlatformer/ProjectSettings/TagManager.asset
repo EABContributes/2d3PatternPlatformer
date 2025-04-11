@@ -10,6 +10,8 @@ TagManager:
   - Enemy
   - 3Platform
   - Kill
+  - Button
+  - BtnPlat
   layers:
   - Default
   - TransparentFX
