@@ -19,7 +19,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public MovementStrategy movementStrategy;
     private ObjectPool objectPool;
     private Manager manager;
+    private PlayerObserver playerPlacement;
 
+    // Start is called before the first frame update
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
         movementStrategy = new DefaultStrategy();
         objectPool = FindObjectOfType<ObjectPool>();
         manager = FindObjectOfType<Manager>();
+        playerPlacement = GetComponent<PlayerObserver>();
     }
 
     // Update is called once per frame
@@ -56,6 +59,19 @@ public class PlayerMovement : MonoBehaviour
         }
         velocityState();
         anim.SetInteger("State", (int)state);
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ExecuteCommand(new RemovePowerup(this));
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExecuteCommand(new PauseCommand());
+        }
+        if (playerPlacement != null)
+        {
+            playerPlacement.AlertObserver(transform.position);
+        }
     }
 
     public void velocityState()
@@ -114,5 +130,9 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         objectPool.SpawnPowerUp(position);
+    }
+    private void ExecuteCommand(ICommand command)
+    {
+        command.Execute();
     }
 }
