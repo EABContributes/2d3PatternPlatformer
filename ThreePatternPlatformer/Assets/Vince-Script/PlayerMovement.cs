@@ -102,21 +102,26 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
+        INewPowerUp powerUp = null;
         if (collision.tag == "Cherry")
         {
-            movementStrategy = new CherryStrategy();
-            objectPool.ReturnToPool(collision.gameObject);
-            StartCoroutine(RespawnPowerUp(collision.transform.position));
+            powerUp = new AdapterCherry();
         }
         else if (collision.tag == "Banana")
         {
-            movementStrategy = new BananaStrategy();
-            objectPool.ReturnToPool(collision.gameObject);
-            StartCoroutine(RespawnPowerUp(collision.transform.position));
+            powerUp = new AdapterBanana();
         }
         else if (collision.tag == "Apple")
         {
-            movementStrategy = new AppleStrategy();
+            powerUp = new AdapterApple();
+        }
+        else if (collision.tag == "Melon")
+        {
+            powerUp = new AdapterMelon();
+        }
+        if (powerUp != null)
+        {
+            powerUp.ActivateNewPowerUp(this);
             objectPool.ReturnToPool(collision.gameObject);
             StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
