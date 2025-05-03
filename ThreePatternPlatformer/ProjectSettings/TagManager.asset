@@ -12,6 +12,7 @@ TagManager:
   - Kill
   - Button
   - BtnPlat
+  - Melon
   layers:
   - Default
   - TransparentFX
