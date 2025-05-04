@@ -1,3 +1,4 @@
+// Edited by Terrel
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,9 +39,16 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         float hDirection = Input.GetAxis("Horizontal");
-        if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
+        /*if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
         {
             rb.velocity = new Vector2(rb.velocity.x, movementStrategy.GetJumpForce());
+            state = State.jump;
+        }*/
+        //Modified below code to be able to use the double jump decorator pattern
+        if (Input.GetButtonDown("Jump") && movementStrategy.CanJump(rb, coll, ground))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, movementStrategy.GetJumpForce());
+            movementStrategy.OnJump();  // track the jump in the strategy
             state = State.jump;
         }
         else if (hDirection < 0)
@@ -100,25 +108,58 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //added in this method so that there isn't repeated code under each individual powerup --TW
+    //Below Method ensures that doublejump is not lost when picking up another powerup
+    private void ApplyPowerUp(MovementStrategy newStrategy, GameObject powerUpObject, Vector2 position)
+    {
+        if (movementStrategy is DoubleJumpDecorator)
+        {
+            movementStrategy = new DoubleJumpDecorator(newStrategy, coll, ground);
+        }
+        else
+        {
+            movementStrategy = newStrategy;
+        }
+
+        objectPool.ReturnToPool(powerUpObject);
+        StartCoroutine(RespawnPowerUp(position));
+    }
+
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Cherry")
         {
-            movementStrategy = new CherryStrategy();
+            /*movementStrategy = new CherryStrategy();
             objectPool.ReturnToPool(collision.gameObject);
-            StartCoroutine(RespawnPowerUp(collision.transform.position));
+            StartCoroutine(RespawnPowerUp(collision.transform.position));*/
+            ApplyPowerUp(new CherryStrategy(), collision.gameObject, collision.transform.position);
         }
         else if (collision.tag == "Banana")
         {
-            movementStrategy = new BananaStrategy();
+            /*movementStrategy = new BananaStrategy();
             objectPool.ReturnToPool(collision.gameObject);
-            StartCoroutine(RespawnPowerUp(collision.transform.position));
+            StartCoroutine(RespawnPowerUp(collision.transform.position));*/
+            ApplyPowerUp(new BananaStrategy(), collision.gameObject, collision.transform.position);
         }
         else if (collision.tag == "Apple")
         {
-            movementStrategy = new AppleStrategy();
+            /*movementStrategy = new AppleStrategy();
             objectPool.ReturnToPool(collision.gameObject);
-            StartCoroutine(RespawnPowerUp(collision.transform.position));
+            StartCoroutine(RespawnPowerUp(collision.transform.position));*/
+            ApplyPowerUp(new AppleStrategy(), collision.gameObject, collision.transform.position);
+        }
+        else if (collision.CompareTag("Strawberry"))
+        {
+            movementStrategy = new DoubleJumpDecorator(movementStrategy, coll, ground);
+
+            if (objectPool != null)
+            {
+                objectPool.ReturnToPool(collision.gameObject);
+            }
+            else
+            {
+                Destroy(collision.gameObject); 
+            }
         }
         else if (collision.tag == "3Platform")
         {

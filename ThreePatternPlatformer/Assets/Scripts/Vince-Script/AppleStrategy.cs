@@ -15,4 +15,13 @@ public class AppleStrategy : MovementStrategy
     {
         return 15f;
     }
+    //Below code was added to make double jump properly work
+    public bool CanJump(Rigidbody2D rb, Collider2D coll, LayerMask ground)
+    {
+        return coll.IsTouchingLayers(ground);
+    }
+    public void OnJump()
+    {
+
+    }
 }
