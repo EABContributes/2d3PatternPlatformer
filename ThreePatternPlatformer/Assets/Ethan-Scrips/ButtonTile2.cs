@@ -9,6 +9,8 @@ public class ButtonTile2 : MonoBehaviour
     private IButtonState2 currentState2;
     public TilemapRenderer redStateRenderer2;
     public SubjectButton buttonSubject;
+    public AudioSource buttonSound;
+    public AudioSource alarmSound;
     private void Start()
     {
         redStateRenderer2 = GetComponent<TilemapRenderer>();
@@ -45,6 +47,7 @@ public class ButtonTile2 : MonoBehaviour
         {
             Debug.Log("Collision Met 2");
             this.ChangeState2(new ButtonOnState2());
+            buttonSound.Play();
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -54,6 +57,7 @@ public class ButtonTile2 : MonoBehaviour
         {
             Debug.Log("Collision Met 2");
             this.ChangeState2(new ButtonOnState2());
+            buttonSound.Play();
         }
     }
 }

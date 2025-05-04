@@ -14,6 +14,10 @@ public class ButtonOnState2 : IButtonState2
         aButtonTile.redStateRenderer2.enabled = false;
         timer = duration;
         aButtonTile.buttonSubject.NotifyBtnActivation();
+        if (aButtonTile.alarmSound != null && !aButtonTile.alarmSound.isPlaying)
+        {
+            aButtonTile.alarmSound.Play();
+        }
     }
 
     public void ExecuteState2(ButtonTile2 aButtonTile)
@@ -24,6 +28,10 @@ public class ButtonOnState2 : IButtonState2
 
     public void ExitState2(ButtonTile2 aButtonTile)
     {
+        if (aButtonTile.alarmSound != null && aButtonTile.alarmSound.isPlaying)
+        {
+            aButtonTile.alarmSound.Stop();
+        }
         Debug.Log("On State Ending 2");
     }
 }

@@ -8,6 +8,7 @@ public class ButtonOnState : IButtonState
     private float duration = 5.0f;
     private float timer;
     
+    
     public void EnterState(ButtonTile aButtonTile)
     {
         Debug.Log("Entering On State");
@@ -16,6 +17,10 @@ public class ButtonOnState : IButtonState
         if (aButtonTile.secretPlatform != null)
         {
             aButtonTile.secretPlatform.SetActive(true);
+        }
+        if (aButtonTile.alarmSound != null && !aButtonTile.alarmSound.isPlaying) 
+        { 
+            aButtonTile.alarmSound.Play();
         }
     }
 
@@ -27,6 +32,10 @@ public class ButtonOnState : IButtonState
 
     public void ExitState(ButtonTile aButtonTile)
     {
+        if (aButtonTile.alarmSound != null && aButtonTile.alarmSound.isPlaying)
+        {
+            aButtonTile.alarmSound.Stop();
+        }
         Debug.Log("On State Ending");
     }
 }

@@ -10,6 +10,7 @@ public class Manager : MonoBehaviour
     public int poolSize = 3;
     public string platformTag = "3Platform";
     private InterfacePlatformFactory PlatformFactory;
+    public AudioSource alarmSound;
 
     void Start()
     {
@@ -31,6 +32,7 @@ public class Manager : MonoBehaviour
         GameObject platform = GetPlatform();
         platform.transform.position = position;
         platform.SetActive(true);
+        alarmSound.Play();
     }
 
     public void DespawnPlatform(GameObject platform)

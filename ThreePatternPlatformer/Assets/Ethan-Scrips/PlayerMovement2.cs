@@ -13,6 +13,7 @@ public class PlayerMovement2 : MonoBehaviour
     [SerializeField] public MovementStrategy movementStrategy;
     private ObjectPool2 objectPool;
     private Manager manager;
+    public AudioSource jumpSound;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +34,7 @@ public class PlayerMovement2 : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, movementStrategy.GetJumpForce());
             state = State.jump;
+            jumpSound.Play();
         }
         else if (hDirection < 0)
         {
