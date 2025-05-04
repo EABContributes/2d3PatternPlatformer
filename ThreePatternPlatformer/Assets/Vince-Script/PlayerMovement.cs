@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private ObjectPool objectPool;
     private Manager manager;
     private PlayerObserver playerPlacement;
+    public AudioSource jumpSound;
 
     // Start is called before the first frame update
     // Start is called before the first frame update
@@ -42,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, movementStrategy.GetJumpForce());
             state = State.jump;
+            jumpSound.Play();
         }
         else if (hDirection < 0)
         {
