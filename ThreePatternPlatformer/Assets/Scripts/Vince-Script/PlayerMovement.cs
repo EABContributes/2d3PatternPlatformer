@@ -39,9 +39,11 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         float hDirection = Input.GetAxis("Horizontal");
-        if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
+        //if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
+        if (Input.GetButtonDown("Jump") && movementStrategy.CanJump(rb, coll, ground)) // Changed this line to fix double jump
         {
             rb.velocity = new Vector2(rb.velocity.x, movementStrategy.GetJumpForce());
+            movementStrategy.OnJump(); //Added in this line to make double jump work properly
             state = State.jump;
             jumpSound.Play();
         }
@@ -102,31 +104,74 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //added in this method so that there isn't repeated code under each individual powerup --TW
+    //Below Method ensures that doublejump is not lost when picking up another powerup
+    public void ApplyPowerUp(MovementStrategy newStrategy, GameObject powerUpObject, Vector2 position)
+    {
+        if (movementStrategy is DoubleJumpDecorator)
+        {
+            movementStrategy = new DoubleJumpDecorator(newStrategy, coll, ground);
+        }
+        else
+        {
+            movementStrategy = newStrategy;
+        }
+
+        if (objectPool != null)
+        {
+            objectPool.ReturnToPool(powerUpObject);
+            StartCoroutine(RespawnPowerUp(position));
+        }
+        else
+        {
+            Destroy(powerUpObject);
+        }
+    }
+
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        INewPowerUp powerUp = null;
+        //INewPowerUp powerUp = null;
         if (collision.tag == "Cherry")
         {
-            powerUp = new AdapterCherry();
+            //powerUp = new AdapterCherry();
+            INewPowerUp powerUp = new AdapterCherry(collision.gameObject);
+            powerUp.ActivateNewPowerUp(this);
+            
         }
         else if (collision.tag == "Banana")
         {
-            powerUp = new AdapterBanana();
+            //powerUp = new AdapterBanana();
+            INewPowerUp powerUp = new AdapterBanana(collision.gameObject);
+            powerUp.ActivateNewPowerUp(this);
+            
         }
         else if (collision.tag == "Apple")
         {
-            powerUp = new AdapterApple();
+            //powerUp = new AdapterApple();
+            INewPowerUp powerUp = new AdapterApple(collision.gameObject);
+            powerUp.ActivateNewPowerUp(this);
+
         }
         else if (collision.tag == "Melon")
         {
-            powerUp = new AdapterMelon();
-        }
-        if (powerUp != null)
-        {
+            //powerUp = new AdapterMelon();
+            INewPowerUp powerUp = new AdapterMelon(collision.gameObject);
             powerUp.ActivateNewPowerUp(this);
-            objectPool.ReturnToPool(collision.gameObject);
-            StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
+        else if (collision.CompareTag("Strawberry"))
+        {
+            movementStrategy = new DoubleJumpDecorator(movementStrategy, coll, ground);
+
+            if (objectPool != null)
+            {
+                objectPool.ReturnToPool(collision.gameObject);
+            }
+            else
+            {
+                Destroy(collision.gameObject);
+            }
+        }
+    
         else if (collision.tag == "3Platform")
         {
             StartCoroutine(manager.HandlePlatform(collision.gameObject));
