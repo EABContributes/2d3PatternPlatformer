@@ -8,12 +8,12 @@ public class HitStomp : MonoBehaviour
 {
     public float bounce;
     public Rigidbody2D rb2D;
-    [SerializeReference]AudioSource myAudioSource;
+    //[SerializeReference]AudioSource myAudioSource; //Sound will be handled by Sound Mediator
 
     // Start is called before the first frame update
     void Start()
     {
-        myAudioSource = GetComponent<AudioSource>();
+        //myAudioSource = GetComponent<AudioSource>(); // Sound will be handled by Sound Mediator
     }
 
     // Update is called once per frame
@@ -27,7 +27,7 @@ public class HitStomp : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             Destroy(other.gameObject);
-            myAudioSource.Play();
+            SoundMediator.Instance.PlayStompSound();
             rb2D.velocity = new Vector2(rb2D.velocity.x, bounce);
         }
     }

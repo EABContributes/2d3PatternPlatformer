@@ -1,3 +1,4 @@
+//Edited by Terrel Woitas
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class Manager : MonoBehaviour
     public int poolSize = 3;
     public string platformTag = "3Platform";
     private InterfacePlatformFactory PlatformFactory;
-    public AudioSource alarmSound;
+    //public AudioSource alarmSound; //commented this out because Sound Mediator will handle this TW
 
     void Start()
     {
@@ -32,7 +33,7 @@ public class Manager : MonoBehaviour
         GameObject platform = GetPlatform();
         platform.transform.position = position;
         platform.SetActive(true);
-        alarmSound.Play();
+        SoundMediator.Instance.PlayAlarmSound();
     }
 
     public void DespawnPlatform(GameObject platform)

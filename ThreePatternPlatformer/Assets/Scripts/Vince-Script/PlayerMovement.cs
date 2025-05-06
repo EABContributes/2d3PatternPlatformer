@@ -1,3 +1,4 @@
+//Edited By Terrel
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private ObjectPool objectPool;
     private Manager manager;
     private PlayerObserver playerPlacement;
-    public AudioSource jumpSound;
+    //public AudioSource jumpSound; //Commented this line out because SoundMediator will take over playing this TW
 
     // Start is called before the first frame update
     // Start is called before the first frame update
@@ -40,12 +41,12 @@ public class PlayerMovement : MonoBehaviour
     {
         float hDirection = Input.GetAxis("Horizontal");
         //if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
-        if (Input.GetButtonDown("Jump") && movementStrategy.CanJump(rb, coll, ground)) // Changed this line to fix double jump
+        if (Input.GetButtonDown("Jump") && movementStrategy.CanJump(rb, coll, ground)) // Changed this line to fix double jump TW
         {
             rb.velocity = new Vector2(rb.velocity.x, movementStrategy.GetJumpForce());
-            movementStrategy.OnJump(); //Added in this line to make double jump work properly
+            movementStrategy.OnJump(); //Added in this line to make double jump work properly TW
             state = State.jump;
-            jumpSound.Play();
+            SoundMediator.Instance.PlayJumpSound();
         }
         else if (hDirection < 0)
         {

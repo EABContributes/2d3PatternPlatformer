@@ -1,3 +1,4 @@
+//Edited By Terrel
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,12 @@ using UnityEngine.SceneManagement;
 public class Player_Death : MonoBehaviour
 {
     [SerializeField] public float delay = 2f;
-    [SerializeReference] AudioSource myDeathSound;
+    [SerializeReference] AudioSource myDeathSound; 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Kill")
         {
-            myDeathSound.Play();
+            SoundMediator.Instance.PlayDeathSound();
             StartCoroutine(WaitAndLoadScene());
         }
     }
