@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private ObjectPool objectPool;
     private Manager manager;
     private PlayerObserver playerPlacement;
+    IPowerupLogContract logging;
     //public AudioSource jumpSound; //Commented this line out because SoundMediator will take over playing this TW
 
     // Start is called before the first frame update
@@ -34,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
         objectPool = FindObjectOfType<ObjectPool>();
         manager = FindObjectOfType<Manager>();
         playerPlacement = GetComponent<PlayerObserver>();
+        logging = ServiceLocator.GetPowerupLogService();
     }
 
     // Update is called once per frame
@@ -135,6 +137,7 @@ public class PlayerMovement : MonoBehaviour
         if (collision.tag == "Cherry")
         {
             //powerUp = new AdapterCherry();
+            logging.Log("Cherry");
             INewPowerUp powerUp = new AdapterCherry(collision.gameObject);
             powerUp.ActivateNewPowerUp(this);
             
@@ -142,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
         else if (collision.tag == "Banana")
         {
             //powerUp = new AdapterBanana();
+            logging.Log("Banana");
             INewPowerUp powerUp = new AdapterBanana(collision.gameObject);
             powerUp.ActivateNewPowerUp(this);
             
@@ -149,6 +153,7 @@ public class PlayerMovement : MonoBehaviour
         else if (collision.tag == "Apple")
         {
             //powerUp = new AdapterApple();
+            logging.Log("Apple");
             INewPowerUp powerUp = new AdapterApple(collision.gameObject);
             powerUp.ActivateNewPowerUp(this);
 
@@ -156,12 +161,14 @@ public class PlayerMovement : MonoBehaviour
         else if (collision.tag == "Melon")
         {
             //powerUp = new AdapterMelon();
+            logging.Log("Melon");
             INewPowerUp powerUp = new AdapterMelon(collision.gameObject);
             powerUp.ActivateNewPowerUp(this);
         }
         else if (collision.CompareTag("Strawberry"))
         {
             movementStrategy = new DoubleJumpDecorator(movementStrategy, coll, ground);
+            logging.Log("Stawberry");
 
             if (objectPool != null)
             {
