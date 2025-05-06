@@ -14,6 +14,7 @@ public class PlayerMovement2 : MonoBehaviour
     private ObjectPool2 objectPool;
     private Manager manager;
     public AudioSource jumpSound;
+    IPowerupLogContract logging;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +25,8 @@ public class PlayerMovement2 : MonoBehaviour
         movementStrategy = new DefaultStrategy();
         objectPool = FindObjectOfType<ObjectPool2>();
         manager = FindObjectOfType<Manager>();
+        logging = ServiceLocator.GetPowerupLogService();
+
     }
 
     // Update is called once per frame
@@ -85,18 +88,21 @@ public class PlayerMovement2 : MonoBehaviour
         if (collision.tag == "Cherry")
         {
             movementStrategy = new CherryStrategy();
+            logging.Log("Cherry");
             objectPool.ReturnToPool(collision.gameObject);
             StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
         else if (collision.tag == "Banana")
         {
             movementStrategy = new BananaStrategy();
+            logging.Log("Banana");
             objectPool.ReturnToPool(collision.gameObject);
             StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
         else if (collision.tag == "Apple")
         {
             movementStrategy = new AppleStrategy();
+            logging.Log("Apple");
             objectPool.ReturnToPool(collision.gameObject);
             StartCoroutine(RespawnPowerUp(collision.transform.position));
         }
